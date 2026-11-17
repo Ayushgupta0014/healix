@@ -309,3 +309,37 @@ export default function App() {
     </div>
   );
 }
+{/* Professional Developer & Copyright Footer */}
+        <footer style={{
+          marginTop: 'auto',
+          paddingTop: '18px',
+          borderTop: '1px solid #1e293b',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '12px',
+          fontSize: '13px',
+          color: '#64748b'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Code2 size={16} color="#38bdf8" />
+            <span>
+              © {new Date().getFullYear()} <strong style={{ color: '#cbd5e1' }}>Healix Autonomous SRE</strong>. All rights reserved.
+            </span>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: '#0f172a',
+            border: '1px solid #1e293b',
+            padding: '6px 14px',
+            borderRadius: '999px',
+            color: '#94a3b8'
+          }}>
+            <span>Engineered & Developed by</span>
+            <span style={{ color: '#38bdf8', fontWeight: 700, letterSpacing: '0.3px' }}>Ayush Gupta</span>
+          </div>
+        </footer>
