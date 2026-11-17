@@ -1,0 +1,16 @@
+services:
+  healix-postgres:
+    image: postgres:15-alpine
+    container_name: healix-postgres
+    environment:
+      POSTGRES_USER: healix_admin
+      POSTGRES_PASSWORD: healix_secret_password
+      POSTGRES_DB: healix_db
+    ports:
+      - "5432:5432"
+
+  healix-redis:
+    image: redis:7-alpine
+    container_name: healix-redis
+    ports:
+      - "6379:6379"
