@@ -11,30 +11,16 @@ app.get('/health', (req, res) => {
 
 // BUG 1: Null Pointer Dereference on nested payload
 app.post('/api/orders/checkout', (req, res) => {
-  const { user, items } = req.body || {};
-  if (!user || typeof user.email !== 'string' || !user.email.includes('@')) {
-    return res.status(400).json({ error: 'Valid user with email is required' });
-  }
-  if (!Array.isArray(items)) {
-    return res.status(400).json({ error: 'Items must be a valid array' });
-  }
-  const domain = user.email.split('@')[1];
-  const total = items.reduce((sum, i) => sum + (Number(i?.price) || 0), 0);
+  const { user, items } = req.body;
+  const domain = user.email.split('@')[1]; 
+  const total = items.reduce((sum, i) => sum + i.price, 0);
   res.json({ message: `Order placed for ${domain}`, total });
 });
 
 // BUG 2: Unhandled JSON Parse / Discount Calculation Crash
 app.post('/api/payments/discount', (req, res) => {
-  const { rawCouponData, amount } = req.body || {};
-  let parsed;
-  try {
-    parsed = typeof rawCouponData === 'string' ? JSON.parse(rawCouponData) : rawCouponData;
-  } catch {
-    return res.status(400).json({ error: 'Malformed JSON in rawCouponData' });
-  }
-  if (!parsed || typeof parsed.discountPercent !== 'number' || typeof amount !== 'number') {
-    return res.status(400).json({ error: 'Valid amount and discountPercent required' });
-  }
+  const { rawCouponData, amount } = req.body;
+  const parsed = JSON.parse(rawCouponData); // Crashes on invalid/missing JSON string
   const finalAmount = amount - (amount * parsed.discountPercent) / 100;
   res.json({ finalAmount });
 });
@@ -43,8 +29,8 @@ app.post('/api/payments/discount', (req, res) => {
 app.get('/api/inventory/:sku', async (req, res, next) => {
   try {
     const sku = req.params.sku;
-    if (!sku || sku === 'CORRUPT_SKU') {
-      return res.status(503).json({ error: 'Invalid or quarantined SKU requested', fallbackCache: true });
+    if (sku === 'CORRUPT_SKU') {
+      throw new Error('Inventory Database Connection Pool Exhausted for SKU: ' + sku);
     }
     res.json({ sku, inStock: true, count: 42 });
   } catch (err) {
